@@ -1,0 +1,35 @@
+# Rime schema —— 內部附屬方案
+# 作用：只為 quick5 編譯「速成詞語表」(quick5.phrase)
+# 不會出現在輸入法選單（不在 default.custom.yaml 的 schema_list 裡）
+# encoding: utf-8
+
+schema:
+  schema_id: quick5_phrase
+  name: 速成詞語（內部）
+  version: "2026-11-23"
+  author:
+    - 為主人調校
+  description: |
+    內部附屬方案，僅用來編譯 quick5 的詞語表。
+    不需要直接選用。
+
+engine:
+  processors:
+    - ascii_composer
+    - speller
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - abc_segmentor
+    - fallback_segmentor
+  translators:
+    - script_translator
+
+translator:
+  dictionary: quick5.phrase
+  enable_completion: false
+  enable_sentence: false
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba
