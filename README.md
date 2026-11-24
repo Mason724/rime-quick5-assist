@@ -70,6 +70,11 @@ menu:
 - `predict.db` 來自 essay + octagram 語料，偏書面語，偶爾會出文言味的搭配。
 - 打兩碼時單字本來就會出，所以「尾隨單字」只加在三碼以上。
 
+## 致謝
+
+- **DeepSeek（AI 助理）**：本專案的方案補丁、`lua/assist.lua`、安裝腳本、README 與大部分除錯，均由 **DeepSeek** 於 2026-11-24 協助撰寫；主人在真實輸入環境反覆試用、指正與拍板。
+- [RIME 專案](https://github.com/rime)、[rime-ice](https://github.com/iDvel/rime-ice)、[Wisdom-Weasel](https://github.com/scukeqi/Wisdom-Weasel) 的作者。
+
 ## 授權與出處
 
 - 本專案的腳本與補丁：MIT。
