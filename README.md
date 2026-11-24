@@ -18,6 +18,30 @@
   檢查方法：`rime.dll` 裡有 `predict_translator` 這個字串就多數有。
 - 已有一個速成方案，`schema_id` 為 `quick5`（本補丁按這個 id 寫；若不同，改 `quick5.custom.yaml` 的檔名即可）
 
+## 開／關聯想
+
+**預設是開的。** 想關掉（例如覺得彈窗打擾、或者打字時不想被搶焦點），有兩個方法：
+
+1. **改設定（最可靠）**：打開 `quick5.custom.yaml`，把這一行
+
+   ```yaml
+   'switches/@after last': {name: prediction, states: [聯想關, 聯想開], reset: 1}
+   ```
+
+   的 `reset: 1` 改成 `reset: 0`，存檔，然後重新部署。
+2. **用方案選單**：在小狼毫圖示按右鍵 →「輸入法設定」／按 `F4` 開方案選單，找「聯想」開關切換（不同版本界面略有差異）。
+
+關掉聯想之後，其餘功能照樣運作：改善過的詞庫、尾隨單字、兩行排版，以及**背景仍然會記錄你的慣用配詞**（`user_pairs.txt`），將來開回聯想即刻有用，不必重新學。
+
+## 已知問題與解法（本專案已附）
+
+| 症狀 | 原因 | 解法 |
+|---|---|---|
+| 按 `Ctrl`／複製貼上時，突然彈出候選窗 | 插件每次 context 更新都會重算預測，修飾鍵也算 | 附 `lua/quiet_ctrl.lua`：按 Ctrl／Alt 時暫停預測，放手後自動恢復 |
+| 聯想窗出著時，第一下 `Backspace` 好像沒反應（字沒刪到）| 插件把第一下 Backspace 當成「關窗」，不讓它刪字 | 同上：`quiet_ctrl` 會先關窗，再把按鍵交回系統，正常刪字 |
+
+如果不想用這兩個補丁，就把 `quick5.custom.yaml` 裡 `lua_processor@*quiet_ctrl` 那一行刪掉，然後把聯想關掉。
+
 ## 安裝
 
 1. 把 `quick5.custom.yaml`、`quick5_phrase.schema.yaml`、`quick5.schema.yaml`、`lua/assist.lua` 複製到 Rime 用戶目錄
