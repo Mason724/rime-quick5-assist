@@ -1,29 +1,28 @@
-﻿# Rime schema patch —— 2026-11-23 為主人調校
+# quick5.custom.yaml —— 速成加強補丁
+# 2026-11-24
 #
-# 原本這裡是：
-#   patch:
-#     __include: grammar:/hant
-# 它會把下列三項一起打開：
-#   translator/contextual_suggestions: true   ← 語言模型按上文重排候選，令次序亂
-#   translator/max_homophones: 7
-#   translator/max_homographs: 7
-# 而且它是在方案之後才套用的，所以方案裡寫 false 也會被它改回 true。
+# 這個補丁做四件事：
+#   1. 聯想：打完一個詞，候選列自動出下一個詞（librime-predict + predict.db）
+#   2. 個人配詞學習：記住你慣用的搭配（lua/assist.lua → user_pairs.txt）
+#   3. 尾隨單字：打三碼以上時，補上頭兩碼的單字（lua/assist.lua）
+#   4. 壓住 Rime 的統計語言模型（contextual_suggestions），避免候選次序跳來跳去
 #
-# 現在索性不用語言模型：速成是「打碼出字」，候選次序應該固定，
-# 不應該因為前一個字而跳來跳去。
+# 想關掉聯想（例如覺得彈窗打擾）：把下面 switches 那行的 reset: 1 改成 reset: 0，
+# 重新部署即可；其餘功能不受影響。
 
 patch:
   translator/contextual_suggestions: false
   phrase/contextual_suggestions: false
 
-  # ===== 聯想（predict）2026-11-24 =====
-  # 用 librime 內建的 librime-predict 插件：打完一個詞，自動猜下一個詞。
-  # 資料：predict.db（官方 predict 資料庫，來源 essay + octagram，繁體）
-  # 開關：方案選單裡的「聯想」（shift+…或狀態列），預設開。
-  # 不要聯想時：把下面三行（processors / translators / switches）刪掉即可。
-  'engine/processors/@before 0': predictor
+  # ===== 聯想 =====
+  # quiet_ctrl：按 Ctrl／Alt 時暫時關掉聯想，避免複製貼上時彈窗；
+  #             聯想窗開著時按 Backspace，先關窗再照常刪字。
+  'engine/processors/@before 0': lua_processor@*quiet_ctrl
+  'engine/processors/@after last': predictor
   'engine/translators/@before 0': predict_translator
+  # assist：個人配詞學習 + 尾隨單字
   'engine/translators/@after last': lua_translator@*assist
+  # reset: 1 = 預設開聯想；改 0 就是預設關
   'switches/@after last': {name: prediction, states: [聯想關, 聯想開], reset: 1}
   predictor:
     db: predict.db
